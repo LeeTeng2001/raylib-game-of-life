@@ -1,4 +1,5 @@
 # User-specific stuff
 .idea
 cmake-build-debug
+build
 .DS_Store
