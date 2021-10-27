@@ -19,6 +19,7 @@ private:
 
     int rowCount;
     int colCount;
+    vector<vector<CellState>> buffer;
     vector<vector<CellState>> states;
 
     void initBoard(float fillFactor) {
@@ -36,17 +37,17 @@ private:
             totalCnt--;
             states[x][y].swapLife();
             // Update neighbour
-            updateNeighbours(x, y, true);
+            updateNeighbours(x, y, states, true);
         }
     }
 
-    void updateNeighbours(int x, int y, bool addNeighbour) {
+    void updateNeighbours(int x, int y, vector<vector<CellState>> &board, bool addNeighbour) const {
         for (int i = std::max(0, x - 1); i < std::min(rowCount, x + 2); ++i) {
             for (int j = std::max(0, y - 1); j < std::min(colCount, y + 2); ++j) {
                 if (i == x && j == y) continue;
 
-                if (addNeighbour) states[i][j].neighboursCount++;
-                else states[i][j].neighboursCount--;
+                if (addNeighbour) board[i][j].neighboursCount++;
+                else board[i][j].neighboursCount--;
             }
         }
     }
@@ -58,18 +59,22 @@ public:
     }
 
     void updateBoard() {
+        buffer = states;
+
         for (int i = 0; i < rowCount; ++i) {
             for (int j = 0; j < colCount; ++j) {
                 if (states[i][j].alive && (states[i][j].neighboursCount < 2 || states[i][j].neighboursCount > 3)) {
-                    states[i][j].swapLife();
-                    updateNeighbours(i, j, false);
+                    buffer[i][j].swapLife();
+                    updateNeighbours(i, j, buffer, false);
                     // live cell with 2, 3 neighboursCount lives to next gen
                 } else if (!states[i][j].alive && states[i][j].neighboursCount == 3) {  // revive dead cell
-                    states[i][j].swapLife();
-                    updateNeighbours(i, j, true);
+                    buffer[i][j].swapLife();
+                    updateNeighbours(i, j, buffer, true);
                 }
             }
         }
+
+        states = buffer;
     }
 
     void debugPrintBoard() const {
