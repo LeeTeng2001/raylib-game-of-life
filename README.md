@@ -7,12 +7,15 @@ A simple Game Of Life demo written with Raylib in C++
 # Demo
 
 ![gif](demo/1.gif)
+
 *20x20 map* 
 
 ![gif](demo/2.gif)
+
 *50x50 map* 
 
 ![gif](demo/3.gif)
+
 *100x100 map* 
 
 # Mac Installation
